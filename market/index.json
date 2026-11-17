@@ -1,0 +1,98 @@
+{
+  "format": 1,
+  "title": {
+    "zh": "阿鲸的插件索引",
+    "en": "Ak's plugin index"
+  },
+  "description": {
+    "zh": "给 DSH 用的一小撮插件，先有摸鱼模式。",
+    "en": "A small set of DSH plugins, starting with Moyu Mode."
+  },
+  "metadata": {
+    "categories": {
+      "safety": {
+        "title": {
+          "zh": "安全与边界",
+          "en": "Safety & Boundaries"
+        }
+      },
+      "tools": {
+        "title": {
+          "zh": "工具与自动化",
+          "en": "Tools & Automation"
+        }
+      }
+    },
+    "labels": {
+      "windows": {
+        "title": {
+          "zh": "Windows",
+          "en": "Windows"
+        }
+      },
+      "sandbox": {
+        "title": {
+          "zh": "沙箱",
+          "en": "Sandbox"
+        }
+      },
+      "agent": {
+        "title": {
+          "zh": "智能体",
+          "en": "Agent"
+        }
+      }
+    },
+    "sortKeys": {}
+  },
+  "plugins": [
+    {
+      "name": "dsh-moyu-badge",
+      "title": {
+        "zh": "摸鱼模式",
+        "en": "Moyu Mode"
+      },
+      "description": {
+        "zh": "给智能体一段有边界的自由：能写的地方只有一块、跑的程序换受限账号、出网和社交各自可关、退出有报告。",
+        "en": "Bounded freedom for your agent: one writable place, programs run as a restricted account, network and social access switchable, an activity report on exit."
+      },
+      "author": "whale-moyu",
+      "homepage": "https://github.com/whale-moyu/dsh-moyu",
+      "repository": {
+        "url": "https://github.com/whale-moyu/dsh-moyu",
+        "directory": "packages/dsh-moyu-badge"
+      },
+      "metadata": {
+        "category": "safety",
+        "keywords": [
+          "sandbox",
+          "agent",
+          "windows",
+          "permissions",
+          "moyu"
+        ],
+        "labels": [
+          "windows",
+          "sandbox",
+          "agent"
+        ],
+        "sortKeys": {}
+      },
+      "versions": [
+        {
+          "version": "0.1.5",
+          "publishTimestamp": 1794914446,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/whale-moyu/dsh-moyu",
+            "commit": "b5375b4df10d8f1bd40fbf724b07ec606c426032",
+            "path": "packages/dsh-moyu-badge"
+          },
+          "engines": {
+            "dsh": ">=0.1.0-rc.6"
+          }
+        }
+      ]
+    }
+  ]
+}
