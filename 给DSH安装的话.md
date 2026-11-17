@@ -19,7 +19,7 @@
 2. **装插件本体**（二选一，优先第一个）：
    - 在 DSH 插件页「已安装 → 添加插件」里填：
      `git+https://github.com/whale-moyu/dsh-moyu.git#<仓库最新 commit>`
-     或直接用插件市场索引源：`https://fastly.jsdelivr.net/gh/whale-moyu/dsh-moyu@main/market/index.json`
+     或直接用插件市场索引源：`https://whale-moyu.github.io/dsh-moyu/market/index.json`
    - 装完**重启 DSH**。重启后插件会自己把主程序铺到 `%USERPROFILE%\.dsh\moyu\`（按 sha256 差量，不动已有配置和数据）。
 
 3. **确认主程序到位**：`%USERPROFILE%\.dsh\moyu\moyu.ps1` 存在。

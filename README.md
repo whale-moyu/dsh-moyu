@@ -34,7 +34,7 @@ market/index.json             插件市场索引（格式 1）
 打开 **插件 → 发现 → 添加索引源**，填这个地址：
 
 ```
-https://fastly.jsdelivr.net/gh/whale-moyu/dsh-moyu@main/market/index.json
+https://whale-moyu.github.io/dsh-moyu/market/index.json
 ```
 
 然后在「摸鱼模式」那张卡上点 **安装**。装完重启 DSH，主程序会自己铺到 `%USERPROFILE%\.dsh\moyu\`。

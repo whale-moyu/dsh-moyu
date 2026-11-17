@@ -186,7 +186,7 @@ git+https://github.com/whale-moyu/dsh-moyu.git#<仓库里最新那个 commit 的
 或者用插件市场索引源（加一次，之后按名字搜）：
 
 ```
-https://fastly.jsdelivr.net/gh/whale-moyu/dsh-moyu@main/market/index.json
+https://whale-moyu.github.io/dsh-moyu/market/index.json
 ```
 
 装完**重启 DSH**。主程序会在插件第一次加载时自己铺到 `%USERPROFILE%\.dsh\moyu\`，不用手动拷。
