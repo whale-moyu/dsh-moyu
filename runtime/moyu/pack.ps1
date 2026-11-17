@@ -145,13 +145,17 @@ $install = @'
 
 给 agent 一段自己支配的时间：有窗口、有额度、有守夜人，而且**越界会被拦**。
 
-这个包会改你的机器：建两个本地账号（`moyu` 只能写游乐场、`akweb` 只能上网）、加几条防火墙规则、往 `%USERPROFILE%\.dsh\` 写文件。都能卸掉，见最后一节。
+> **如果你能开一个 AI 会话（DSH 里就行），别自己照这份做。**
+> 用仓库根目录的 `给DSH安装的话.md`：把那一整段复制给 AI，它会自己体检、装好、然后真拦一次证明生效。
+> 这份文档是给「没有 AI 可用」或「AI 装到一半卡住」时手操兜底用的。
+
+这个包会改你的机器：建两个本地账号（`moyu` 只能写游乐场、`akweb` 只能上网）、加两条防火墙规则、往 `%USERPROFILE%\.dsh\` 写文件。都能卸掉，见第五节。
 
 ---
 
-## 一、装之前，先确认三件事
+## 一、装之前确认三件事
 
-在 PowerShell 里跑：
+在 **Windows PowerShell 5.1**（不是 pwsh）里跑：
 
 ```powershell
 ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole('Administrators')
@@ -161,32 +165,42 @@ Test-Path "$env:USERPROFILE\.dsh\profiles"
 
 期望：`True`、`5`、`True`。
 
-- 不是 `True` → 用管理员身份打开 PowerShell 再来（后面要建账号、改防火墙）。
-- 不是 `5` → 你是 PowerShell 7。这个包用的是 5.1 才有的写法，请在「Windows PowerShell 5.1」里跑脚本，不要用 pwsh。
-- `.dsh\profiles` 不存在 → 说明 DSH 还没跑起来过，先开一次 DSH 再装。
-
-还有一条：**不要装在别人也用的电脑上**。它会建账号、动防火墙，公用的机器会互相干扰。
+- 第一个不是 `True` → 用管理员身份打开 PowerShell 再来。
+- 第二个不是 `5` → 你在 pwsh 里，换 `powershell.exe`。
+- 第三个 `False` → DSH 还没跑起来过，先开一次。
 
 ---
 
-## 二、装（只拷插件，主程序自己铺）
+## 二、装（两条路，优先第一条）
 
-**你只需要放插件本体这一半**，主程序在插件第一次加载时自己铺到 `%USERPROFILE%\.dsh\moyu\`，不用手动拷。
+### 方式 A：从 GitHub 装（推荐，也是唯一会持续更新的路）
+
+DSH 里 **插件 → 已安装 → 添加插件**，粘贴：
+
+```
+git+https://github.com/whale-moyu/dsh-moyu.git#<仓库里最新那个 commit 的完整 40 位 sha>
+```
+
+仓库地址：https://github.com/whale-moyu/dsh-moyu —— 首页能看到最新 commit，右键复制完整 sha。
+
+或者用插件市场索引源（加一次，之后按名字搜）：
+
+```
+https://fastly.jsdelivr.net/gh/whale-moyu/dsh-moyu@main/market/index.json
+```
+
+装完**重启 DSH**。主程序会在插件第一次加载时自己铺到 `%USERPROFILE%\.dsh\moyu\`，不用手动拷。
+
+### 方式 B：离线 zip（没有网络、GitHub 不通时）
+
+这个 zip 是给你用的兜底，正常情况下用不上。
 
 ```powershell
 New-Item -ItemType Directory -Force "$env:USERPROFILE\.dsh\plugins\dsh-moyu-badge" | Out-Null
 Copy-Item .\dsh-moyu-badge\* "$env:USERPROFILE\.dsh\plugins\dsh-moyu-badge\" -Recurse -Force
 ```
 
-（包里还有一个顶层 `moyu\` 目录 —— 那是给你手动检查/替换用的，正常安装**不需要**动它。插件自带的 runtime 在 `dsh-moyu-badge\runtime\moyu\` 里，加载时会按 sha256 差量补，已有文件不覆盖、你的 `config.json` 和 `freetime\` 一个字都不动。）
-
-然后挂进 profile。找到你的 profile 目录：
-
-```powershell
-Get-ChildItem "$env:USERPROFILE\.dsh\profiles" -Directory | Select-Object -ExpandProperty Name
-```
-
-编辑 `%USERPROFILE%\.dsh\profiles\<那个名字>\package.json`，在 `dependencies` 里加一行、在 `dsh.profile.bundles` 里加一个名字：
+然后挂进 profile：`%USERPROFILE%\.dsh\profiles\<当前 profile>\package.json`，`dependencies` 加一行、`dsh.profile.bundles` 加一个名字：
 
 ```json
 "dependencies": {
@@ -199,15 +213,13 @@ Get-ChildItem "$env:USERPROFILE\.dsh\profiles" -Directory | Select-Object -Expan
 }
 ```
 
-（`bundles` 里原来有别的就保留，只在末尾加这一句。路径用正斜杠。）
+（`bundles` 里原来有别的就保留，只在末尾加这一句；路径用正斜杠。）最后重启 DSH。
 
-最后重启 DSH。
+包里顶层的 `moyu\` 目录是手动检查/对照用的，正常安装**不需要**动它。
 
 ---
 
-## 三、装完怎么知道装对了（6 项）
-
-按顺序做，前一项不过就别往下走。
+## 三、装完怎么知道装对了（6 项，前一项不过就别往下）
 
 **1. 文件到位**
 
@@ -216,13 +228,13 @@ Test-Path "$env:USERPROFILE\.dsh\plugins\dsh-moyu-badge\lib\index.js"
 Test-Path "$env:USERPROFILE\.dsh\moyu\moyu.ps1"
 ```
 
-第一个 `True` 是你拷对了；第二个 `True` 是**插件自己把主程序铺开了**（第一次打开 DSH 之后才会有，重启前没有很正常）。
+第二个 `True` 是**插件自己把主程序铺开了**（第一次打开 DSH 之后才有，重启前没有很正常）。
 
 **2. 插件被加载了**
 
-DSH 里打开「设置 → 摸鱼模式」。能看到 7 个页签（概览 / 时间 / 能力 / 断线 / 意愿 / 扩展 / 严格）就算加载成功。
+设置 → 摸鱼模式，能看到 7 个页签（概览 / 时间 / 能力 / 断线 / 意愿 / 扩展 / 严格）。
 
-看不到 → 大概率是 `package.json` 那两处没加对，或者没重启。
+看不到 → 大概率 profile 的 `package.json` 没改对，或者没重启。
 
 **3. 体检**
 
@@ -230,9 +242,7 @@ DSH 里打开「设置 → 摸鱼模式」。能看到 7 个页签（概览 / �
 & "$env:USERPROFILE\.dsh\moyu\moyu.ps1" doctor
 ```
 
-期望最后一行是 `结果：N 项正常，0 项警告，0 项失败`。
-
-有几项是**可选**的（浏览器、python、隐藏启动器），缺了写的是「可选功能」而不是失败——不影响核心防护。
+期望最后一行 `结果：N 项正常，0 项警告，0 项失败`。有几项是**可选**的（浏览器、python、隐藏启动器），缺了写「可选功能」不算失败。
 
 **4. 两个隔离账号在**
 
@@ -241,7 +251,7 @@ net user moyu
 net user akweb
 ```
 
-都能打印出账号信息。没有的话跑一次：
+没有就补：
 
 ```powershell
 & "$env:USERPROFILE\.dsh\moyu\install-l3.ps1"
@@ -250,13 +260,9 @@ net user akweb
 
 **5. 插件自检**
 
-设置 → 摸鱼模式 → 概览 → 「跑一次自检」。六项全绿。
-
-这一步查的是「插件自己有没有坏」（读配置、地盘、边界、严格档、锁、游乐场），跟体检不重复。
+设置 → 摸鱼模式 → 概览 → 「跑一次自检」，六项全绿。它查的是「插件自己有没有坏」，跟体检不重复。
 
 **6. 真拦一次（最重要）**
-
-体检过了不代表真拦得住。花两分钟实测：
 
 ```powershell
 & "$env:USERPROFILE\.dsh\moyu\moyu.ps1" enter -Minutes 10
@@ -264,10 +270,10 @@ net user akweb
 
 进了摸鱼之后，让 DSH 干两件事：
 
-- 让它写一个 `C:\Windows\test.txt` → 应该是**被拒**，回一句「只能写 freetime/ 和 AkPlay/」
-- 让它读 `%USERPROFILE%\.dsh\qq-console.json` → 应该是**被拒**
+- 写 `C:\Windows\test.txt` → 应被拒（回「只能写 freetime/ 和 AkPlay/」）
+- 读 `%USERPROFILE%\.dsh\qq-console.json` → 应被拒
 
-两条都被拒，才算真的装好了。然后：
+两条都被拒才算装好。然后：
 
 ```powershell
 & "$env:USERPROFILE\.dsh\moyu\moyu.ps1" exit
@@ -277,13 +283,13 @@ net user akweb
 
 ## 四、装不上时的四种情况
 
-**「设置里没有摸鱼模式」** → `package.json` 的 `bundles` 没加，或者加在了错的 profile 目录。`Get-ChildItem "$env:USERPROFILE\.dsh\profiles"` 看有几个，挑你正在用的那个。
+**「设置里没有摸鱼模式」** → profile 的 `bundles` 没加，或加在了另一个 profile 目录。
 
-**「doctor 说找不到 PowerShell 5.1 的语法」** → 你是用 pwsh 跑的。换成 `powershell.exe`。
+**「doctor 报 PowerShell 语法错」** → 你用 pwsh 跑的，换 `powershell.exe`。
 
-**「建账号失败：拒绝访问」** → 不是管理员。右键 PowerShell → 以管理员身份运行。
+**「建账号失败：拒绝访问」** → 不是管理员。
 
-**「进了摸鱼，但什么都被拒」** → 正常，默认全关。让 DSH 自己调 `moyu_boundary` 打开「跑」并选一块地盘，或者去设置页「能力」里开。
+**「进了摸鱼，但什么都被拒」** → 正常，默认全关。让它调 `moyu_boundary` 打开「跑」并选地盘，或去设置页「能力」里开。
 
 ---
 
@@ -304,24 +310,17 @@ Remove-Item "$env:USERPROFILE\.dsh\plugins\dsh-moyu-badge" -Recurse -Force
 
 最后删掉 profile `package.json` 里那两行，重启 DSH。
 
-设置页「概览 → 卸载」按钮做的是同一件事（前七步），跑完再重启也干净。
+设置页「概览 → 卸载」按钮做的是同一件事（前七步），跑完再重启也干净。**删的是真文件，没有回收站。**
 
 ---
 
-## 六、包里没有的东西
+## 六、已知限制（先知道再用）
 
-不随包分发：立绘、房间、语音模型、任何人的真实音色。
-
-想要一个形象，看 `moyu\摸鱼模式-人话版.md` 末尾那节——只给了一个视频号，不做素材传播。
-
----
-
-## 七、已知限制（三件事，先知道再用）
-
-1. **上传只挡一半**：页面里裸 `body` 的上传被拦，`multipart` 走 Fetch 也会被掐；但 HTTPS 的 body 对代理不可见，真要传还是有缝。它是减速带，不是墙。
+1. **上传只挡一半**：裸 `body` 与 `multipart` 被拦，但 HTTPS 的 body 对代理不可见，真要传还是有缝。它是减速带，不是墙。
 2. **`file://` 没有系统级禁令**：这版 Edge 不执行那条策略（实测报「错误」）。现在靠两层：工具层直接拒 + 浏览器账号读不到你的目录。
-3. **建塔那类连续操作要一次跑完**：`moyu_desktop` 的 `seq` 支持一次调用连点多下，因为两条命令之间隔 0.9 秒，游戏不认。
+3. **连续操作要一次跑完**：`moyu_desktop` 的 `seq` 能一次调用连点多下——两条命令之间隔 0.9 秒，游戏不认。
 
+不随包分发：立绘、房间、语音模型、任何人的真实音色。想要形象，看 `moyu\摸鱼模式-人话版.md` 末尾那节（只给一个视频号）。
 '@
 [IO.File]::WriteAllText((Join-Path $Stage 'INSTALL.md'), $install, [Text.UTF8Encoding]::new($true))
 
