@@ -104,6 +104,20 @@ if (Test-Path -LiteralPath $wpPlugin) {
   [System.IO.File]::WriteAllText((Join-Path $wpExtra 'README.md'), $wpReadme, (New-Object System.Text.UTF8Encoding($true)))
 }
 
+# 2026-11-17：插件自带 runtime —— 装插件就够了，不用手动铺两半
+$rtBundle = Join-Path $Root 'tools\make-runtime-bundle.mjs'
+$rtDst = Join-Path $BadgeStage 'runtime\moyu'
+if (Test-Path -LiteralPath $rtBundle) {
+  $nodeExe = 'node'
+  $rtTry = Join-Path $Root 'l3-programs.json'
+  if (Test-Path -LiteralPath $rtTry) {
+    try { $rtCfg = Get-Content -LiteralPath $rtTry -Raw -Encoding UTF8 | ConvertFrom-Json; if ($rtCfg.node) { $nodeExe = $rtCfg.node } } catch {}
+  }
+  & $nodeExe $rtBundle $Root $rtDst | Out-Null
+  if (Test-Path -LiteralPath $rtDst) {
+    [System.IO.File]::WriteAllText((Join-Path $rtDst 'VERSION'), ($Version + "`r`n"), (New-Object System.Text.UTF8Encoding($false)))
+  }
+}
 # 2026-11-17：报告自检 + 报告本体 + 活动报告，装到别人机器上 doctor 也要能跑这两条
 foreach ($extra in @('activity-report.mjs', 'report-selftest.mjs', 'smoke.mjs')) {
   $srcExtra = Join-Path $Root ('tools\' + $extra)
@@ -155,18 +169,16 @@ Test-Path "$env:USERPROFILE\.dsh\profiles"
 
 ---
 
-## 二、装（三条命令）
+## 二、装（只拷插件，主程序自己铺）
 
-把包里两半放到该去的地方：
+**你只需要放插件本体这一半**，主程序在插件第一次加载时自己铺到 `%USERPROFILE%\.dsh\moyu\`，不用手动拷。
 
 ```powershell
-# 1) 主程序
-Copy-Item .\moyu\* "$env:USERPROFILE\.dsh\moyu\" -Recurse -Force
-
-# 2) 插件本体
 New-Item -ItemType Directory -Force "$env:USERPROFILE\.dsh\plugins\dsh-moyu-badge" | Out-Null
 Copy-Item .\dsh-moyu-badge\* "$env:USERPROFILE\.dsh\plugins\dsh-moyu-badge\" -Recurse -Force
 ```
+
+（包里还有一个顶层 `moyu\` 目录 —— 那是给你手动检查/替换用的，正常安装**不需要**动它。插件自带的 runtime 在 `dsh-moyu-badge\runtime\moyu\` 里，加载时会按 sha256 差量补，已有文件不覆盖、你的 `config.json` 和 `freetime\` 一个字都不动。）
 
 然后挂进 profile。找到你的 profile 目录：
 
@@ -200,11 +212,11 @@ Get-ChildItem "$env:USERPROFILE\.dsh\profiles" -Directory | Select-Object -Expan
 **1. 文件到位**
 
 ```powershell
-Test-Path "$env:USERPROFILE\.dsh\moyu\moyu.ps1"
 Test-Path "$env:USERPROFILE\.dsh\plugins\dsh-moyu-badge\lib\index.js"
+Test-Path "$env:USERPROFILE\.dsh\moyu\moyu.ps1"
 ```
 
-两个都要 `True`。
+第一个 `True` 是你拷对了；第二个 `True` 是**插件自己把主程序铺开了**（第一次打开 DSH 之后才会有，重启前没有很正常）。
 
 **2. 插件被加载了**
 

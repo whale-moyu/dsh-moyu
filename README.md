@@ -21,7 +21,9 @@ runtime/moyu/                 主程序（PowerShell + Node 脚本，装到 %USE
 packages/dsh-moyu-badge/      DSH 插件本体（装到 %USERPROFILE%\.dsh\plugins\）
 ```
 
-现在这两半要分别放。**下一步**是让插件自带 `runtime/moyu`，首次加载时自己解出来，这样装插件就够了。
+**插件自带主程序**：`packages/dsh-moyu-badge/runtime/moyu/` 里是同一份脚本，插件加载时会按 sha256 差量铺到 `%USERPROFILE%\.dsh\moyu\` —— 只补缺的和改过的，`config.json`、`state.json`、`freetime/`、`logs/`、`secrets/` 这些用户数据一个都不碰。所以**装插件就够了**，不用手动拷两半。
+
+顶层 `runtime/moyu/` 是源（也是手动安装时的备选），打包时由 `pack.ps1` 调 `tools/make-runtime-bundle.mjs` 同步进插件。
 
 ## 安装
 
