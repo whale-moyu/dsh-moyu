@@ -5,7 +5,7 @@ import path from 'node:path'
 import os from 'node:os'
 
 const SRC = process.argv[2] || path.join(os.homedir(), '.dsh', 'moyu')
-const DST = process.argv[3] || path.join(os.homedir(), 'Documents', 'dsh-moyu-repo', 'packages', 'dsh-moyu-badge', 'runtime', 'moyu')
+const DST = process.argv[3] || path.join(os.homedir(), 'Documents', 'dsh-moyu-repo', 'runtime', 'moyu')
 
 // 用户数据，不进包
 const SKIP_DIRS = new Set(['freetime', 'state', 'logs', 'secrets', 'bin', 'dist', 'old', '__pycache__', 'shots', '备档', 'games'])
@@ -17,6 +17,8 @@ const SKIP_FILES = new Set([
   '今晚授权-2026-11-14.txt', '2026-11-13-moyu.md',
   'play-log.jsonl', 'play-state.json', 'grid-calib.json', 'cursor-req.json', 'quota-state.json',
   'l3-programs.json', 'node-path.txt',
+  // 重启用的临时批处理（每次现写，不属于程序）
+  'restart-once.cmd', 'restart-dsh.new.ps1',
 ])
 
 let copied = 0

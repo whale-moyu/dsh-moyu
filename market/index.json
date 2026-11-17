@@ -59,8 +59,7 @@
       "author": "whale-moyu",
       "homepage": "https://github.com/whale-moyu/dsh-moyu",
       "repository": {
-        "url": "https://github.com/whale-moyu/dsh-moyu",
-        "directory": "packages/dsh-moyu-badge"
+        "url": "https://github.com/whale-moyu/dsh-moyu"
       },
       "metadata": {
         "category": "safety",
@@ -85,8 +84,7 @@
           "source": {
             "type": "git",
             "url": "https://github.com/whale-moyu/dsh-moyu",
-            "commit": "9946a099c71708a88affd5c342f511380ac41518",
-            "path": "packages/dsh-moyu-badge"
+            "commit": "9946a099c71708a88affd5c342f511380ac41518"
           },
           "engines": {
             "dsh": ">=0.1.0-rc.6"

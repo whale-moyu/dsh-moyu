@@ -17,13 +17,15 @@
 ## 仓库结构
 
 ```
+package.json                  插件本体（这个仓库根目录就是一个包）
+lib/ client/                  插件代码
 runtime/moyu/                 主程序（PowerShell + Node 脚本，装到 %USERPROFILE%\.dsh\moyu\）
-packages/dsh-moyu-badge/      DSH 插件本体（装到 %USERPROFILE%\.dsh\plugins\）
+market/index.json             插件市场索引（格式 1）
 ```
 
-**插件自带主程序**：`packages/dsh-moyu-badge/runtime/moyu/` 里是同一份脚本，插件加载时会按 sha256 差量铺到 `%USERPROFILE%\.dsh\moyu\` —— 只补缺的和改过的，`config.json`、`state.json`、`freetime/`、`logs/`、`secrets/` 这些用户数据一个都不碰。所以**装插件就够了**，不用手动拷两半。
+**插件自带主程序**：`runtime/moyu/` 里是同一份脚本，插件加载时会按 sha256 差量铺到 `%USERPROFILE%\.dsh\moyu\` —— 只补缺的和改过的，`config.json`、`state.json`、`freetime/`、`logs/`、`secrets/` 这些用户数据一个都不碰。所以**装插件就够了**，不用手动拷两半。
 
-顶层 `runtime/moyu/` 是源（也是手动安装时的备选），打包时由 `pack.ps1` 调 `tools/make-runtime-bundle.mjs` 同步进插件。
+仓库根就是包本身，所以从 git 装不需要 `&path:`：`git+https://github.com/whale-moyu/dsh-moyu.git#<commit>` 即可。
 
 ## 安装
 
