@@ -17,6 +17,8 @@ const SKIP_FILES = new Set([
   '今晚授权-2026-11-14.txt', '2026-11-13-moyu.md',
   'play-log.jsonl', 'play-state.json', 'grid-calib.json', 'cursor-req.json', 'quota-state.json',
   'l3-programs.json', 'node-path.txt',
+  // 重启用的临时批处理（每次现写，不属于程序）
+  'restart-once.cmd', 'restart-dsh.new.ps1',
 ])
 
 let copied = 0

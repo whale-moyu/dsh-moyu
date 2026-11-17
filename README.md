@@ -27,6 +27,18 @@ packages/dsh-moyu-badge/      DSH 插件本体（装到 %USERPROFILE%\.dsh\plugi
 
 ## 安装
 
+**方式一：从插件市场装（推荐）**
+
+打开 **插件 → 发现 → 添加索引源**，填这个地址：
+
+```
+https://fastly.jsdelivr.net/gh/whale-moyu/dsh-moyu@main/market/index.json
+```
+
+然后在「摸鱼模式」那张卡上点 **安装**。装完重启 DSH，主程序会自己铺到 `%USERPROFILE%\.dsh\moyu\`。
+
+**方式二：手动装**
+
 见 `runtime/moyu/README.md` 与包里生成的 `INSTALL.md`（`moyu/pack.ps1` 会打出一个含 `INSTALL.md` 的 zip）。
 
 六步自查在 `INSTALL.md` 第三节。最后一步是**真拦一次**——体检通过不等于拦得住。
