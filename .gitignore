@@ -1,0 +1,18 @@
+# 摸鱼文件（这些不进仓库）
+freetime/
+state/
+logs/
+secrets/
+bin/
+dist/
+*.bak*
+备档/
+playground.legacy-*/
+restart-once.cmd
+*.log
+runtime/moyu/state.json
+runtime/moyu/grant.json
+runtime/moyu/tools/play-state.json
+runtime/moyu/tools/play-log.jsonl
+runtime/moyu/tools/grid-calib.json
+runtime/moyu/2026-11-13-moyu.md

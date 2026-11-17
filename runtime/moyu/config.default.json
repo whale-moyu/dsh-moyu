@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "budget": {
+    "absoluteYuan": 5,
+    "remindPercent": 60
+  },
+  "wake": {
+    "maxCount": 0,
+    "intervalMinutes": 30
+  },
+  "window": {
+    "mode": "duration",
+    "durationMinutes": 120,
+    "timeRange": "21:00-23:30"
+  },
+  "play": {
+    "remindMinutes": 40,
+    "limitMinutes": 60
+  },
+  "paths": {
+    "writable": [
+      "freetime/"
+    ],
+    "readonly": "all",
+    "protected": []
+  },
+  "permissions": {
+    "runCommands": true,
+    "networkReadonly": true,
+    "social": "owner"
+  },
+  "rejection": {
+    "mode": "off"
+  },
+  "watch": {
+    "outer": true,
+    "outerOnCrashOnly": false
+  },
+  "float": {
+    "enabled": true
+  }
+}

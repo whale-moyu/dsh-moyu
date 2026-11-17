@@ -1,0 +1,54 @@
+{
+  "name": "dsh-moyu-badge",
+  "version": "0.1.5",
+  "description": "摸鱼模式徽章与设置页：右下角状态、设置里的一整页开关、体检与手册入口",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./client/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "client",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "moyu"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-settings"
+      ],
+      "platform": "web"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh": ">=0.1.0-rc.6"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "author": {
+    "name": "whale-moyu",
+    "url": "https://github.com/whale-moyu"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whale-moyu/dsh-moyu.git"
+  },
+  "homepage": "https://github.com/whale-moyu/dsh-moyu",
+  "bugs": {
+    "url": "https://github.com/whale-moyu/dsh-moyu/issues"
+  },
+  "license": "MIT"
+}

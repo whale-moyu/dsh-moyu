@@ -1,0 +1,5 @@
+# dsh-moyu-badge 的加载补丁。
+# 只插入一个插件行；不碰任何其他条目。
+- insert:
+    - id: moyu-badge
+      name: 'dsh-moyu-badge'
