@@ -1,0 +1,14 @@
+# 统一换行：PowerShell 5.1 与 cmd 要 CRLF，其余交给 git 自己判断
+* text=auto
+*.ps1 text eol=crlf
+*.psm1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.vbs text eol=crlf
+*.mjs text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.py text eol=lf
+*.txt text eol=lf
