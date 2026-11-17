@@ -80,11 +80,11 @@
       "versions": [
         {
           "version": "0.1.5",
-          "publishTimestamp": 1794914782,
+          "publishTimestamp": 1794917054,
           "source": {
             "type": "git",
             "url": "https://github.com/whale-moyu/dsh-moyu",
-            "commit": "9946a099c71708a88affd5c342f511380ac41518"
+            "commit": "eb9eece089a14c95d3d8edf39b61e64469194707"
           },
           "engines": {
             "dsh": ">=0.1.0-rc.6"
