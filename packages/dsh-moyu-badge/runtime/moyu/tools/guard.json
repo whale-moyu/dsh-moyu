@@ -1,0 +1,106 @@
+{
+  "_comment": "desktop.ps1 输入守卫。enabled=false 时全部放行。forbidProcesses 优先级最高，命中即拒（仍是子串匹配，宁可多拦）；allowApps 非空即进入白名单模式，白名单匹配的是 进程名 / 可执行文件名 / 不含扩展名的文件名 三者之一，精确相等或带 * 通配（2026-11-02 从子串匹配改成精确，防 notepad2 这类冒名）。",
+  "_note": "2026-11-01 补：加了一批『让它替我操作就等于绕过一切』的进程——终端、注册表、任务管理器、系统设置、远程桌面。这些不在白名单里本来就点不到，加进来是为了兜底（万一以后有人把白名单放宽）。",
+  "enabled": true,
+  "forbidProcesses": [
+    "DeepSeek Harness",
+    "1Password",
+    "Bitwarden",
+    "KeePass",
+    "keepass",
+    "consent",
+    "LogonUI",
+    "LockApp",
+    "CredentialUIBroker",
+    "SecurityHealthUI",
+    "cmd.exe",
+    "powershell",
+    "pwsh",
+    "WindowsTerminal",
+    "wt.exe",
+    "conhost",
+    "regedit",
+    "taskmgr",
+    "mmc.exe",
+    "gpedit",
+    "secpol",
+    "mstsc",
+    "quickassist",
+    "SystemSettings",
+    "Control Panel",
+    "UserAccountControlSettings"
+  ],
+  "allowApps": [
+    "notepad",
+    "mspaint",
+    "Minimalist Tower Defense",
+    "SlayTheSpire"
+  ],
+  "_note3": "2026-11-02 加 shotForbidProcesses：截图（shot）只判这一张表，不判 forbidProcesses、也不套 allowApps——看见密码管理器跟往里打字一样糟，但截图只读、改不了任何东西，所以自己的 DSH 窗口和终端是允许拍的。留空数组等于关掉截图禁区。",
+  "shotForbidProcesses": [
+    "1Password",
+    "Bitwarden",
+    "KeePass",
+    "keepass",
+    "consent",
+    "LogonUI",
+    "LockApp",
+    "CredentialUIBroker",
+    "UserAccountControlSettings",
+    "SecurityHealthUI",
+    "mstsc",
+    "quickassist"
+  ],
+  "gameApprovals": [
+    {
+      "id": "001",
+      "name": "极简塔防",
+      "app": "Minimalist Tower Defense",
+      "exe": "E:\\steam\\steamapps\\common\\Minimalist Tower Defense\\Minimalist Tower Defense.exe",
+      "steamAppId": "2617400",
+      "approvedAt": "2026-11-01T17:25:00+08:00",
+      "approvedBy": "用户",
+      "scope": "只操作游戏窗口；不碰商店/支付/社区；不打字聊天",
+      "status": "approved"
+    }
+  ],
+  "allowDomains": [
+    "github.com",
+    "codeload.github.com",
+    "objects.githubusercontent.com",
+    "raw.githubusercontent.com",
+    "gist.githubusercontent.com",
+    "huggingface.co",
+    "cdn-lfs.huggingface.co",
+    "cdn.jsdelivr.net",
+    "unpkg.com",
+    "opengameart.org",
+    "kenney.nl",
+    "itch.io"
+  ],
+  "fetchMaxMB": 20,
+  "playground": "~/AkPlay",
+  "runAllow": [
+    "node",
+    "python",
+    "python3",
+    "py"
+  ],
+  "runTimeoutMs": 60000,
+  "rateLimit": {
+    "windowMin": 60,
+    "maxPerWindow": 12,
+    "coolDownMin": 15
+  },
+  "boundaryLog": "~/.dsh/tools/boundary.log",
+  "diaryDir": "~/.dsh/moyu/freetime/diary",
+  "_note2": "2026-11-01：加 rateLimit（同类越界 60 分钟内超过 12 次 → 冷却 15 分钟）与 boundaryLog（统一边界日志，字段：时间 | 层 | 动作 | 目标 | 结果 | 原因）。",
+  "actionQuota": {
+    "windowMin": 60,
+    "maxPerWindow": 200
+  },
+  "_note4": "2026-11-02 加 actionQuota：限的是“成功注入的动作数”，不是越界次数——一次窗口内最多 200 个点击/按键/打字，超了拒绝并记 layer=3，防止合法但疯狂的循环。",
+  "_note2b": "2026-11-08 用户批：allowApps 从「昨天玩过的游戏」改成常驻日常组（记事本/画图/资源管理器/浏览器）；玩过的两个游戏留着不撤，已走过 gameApprovals。新游戏仍先申请再往这里加。",
+  "_note2c": "2026-11-16：从 allowApps 去掉 explorer——资源管理器能移动/删除任意文件，等于绕过「只写 freetime/」。浏览器留着，但要清楚它等于「全互联网 + 已登录账号」：摸鱼时能看任意站点，不能改变这一点，只能事后看 boundary.log。allowApps 之外的一切窗口仍点不到。",
+  "_note2d": "2026-11-16 用户批：浏览器（msedge/chrome/firefox）从 allowApps 移除。原因：浏览器是管理员身份、自己联网，「联」的防火墙只挡 moyu 账号；它还能「另存为」写任意位置，等于把网络边界和写边界一起绕开。摸鱼要上网改走 web_fetch（有日志、只取文本、不带登录态）。"
+}

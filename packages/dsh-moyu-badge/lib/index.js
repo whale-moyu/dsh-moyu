@@ -34,6 +34,7 @@ import {
 } from './store.js'
 import { isLoopback, deny, readJsonBody, sameOrigin } from './http.js'
 import { ROW_TEXT, BADGE_JS } from './client-inject.js'
+import { ensureRuntime } from './runtime-install.js'
 import { logGuardError } from './audit.js'
 import { logDenial, logWrite, readAclRecord, readGate } from './audit.js'
 
@@ -521,6 +522,14 @@ function runSelfCheck() {
     return 'run=' + (b.exec || 'off') + ' net=' + (b.net ? 'on' : 'off')
   })
   add('strict', () => 'level ' + strictOf(readConfig()).level)
+  add('runtime', () => {
+    const bundled = path.join(PLUGIN_DIR, 'runtime', 'moyu', 'VERSION')
+    if (!fs.existsSync(bundled)) return '包内没有 runtime（手动安装模式）'
+    const v = fs.existsSync(path.join(MOYU_DIR, 'VERSION'))
+      ? fs.readFileSync(path.join(MOYU_DIR, 'VERSION'), 'utf8').trim()
+      : '未装'
+    return '包内 ' + fs.readFileSync(bundled, 'utf8').trim() + ' / 已装 ' + v
+  })
   add('locks', () => {
     const f = path.join(MOYU_DIR, 'state', 'acl.json')
     return fs.existsSync(f) ? 'locked' : 'unlocked'
@@ -708,6 +717,18 @@ export function checkIncident(dir) {
 export default {
   name: 'dsh-moyu-badge',
   apply(root) {
+    // ⓪ 自带 runtime：插件包里有 runtime/moyu，缺什么补什么（不碰用户数据）
+    try {
+      const r = ensureRuntime({ pluginDir: PLUGIN_DIR, moyuDir: MOYU_DIR })
+      if (r && !r.ok && r.reason !== 'no-bundle') {
+        try { console.warn('[dsh-moyu-badge] runtime 铺设失败：' + (r.reason || 'unknown')) } catch (e) {}
+      } else if (r && r.copied) {
+        try { console.log('[dsh-moyu-badge] runtime ' + (r.bundledVersion || '') + ' 铺好，写了 ' + r.copied + ' 个文件') } catch (e) {}
+      }
+    } catch (err) {
+      try { console.warn('[dsh-moyu-badge] runtime 铺设异常：' + String((err && err.message) || err)) } catch (e) {}
+    }
+
     const disposers = []
     root.effect(() => () => {
       for (const d of disposers) {
